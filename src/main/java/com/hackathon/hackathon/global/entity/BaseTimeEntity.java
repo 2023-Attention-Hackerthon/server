@@ -1,6 +1,10 @@
 package com.hackathon.hackathon.global.entity;
 
+import com.hackathon.hackathon.domain.wallet.entity.Wallet;
+import com.hackathon.hackathon.domain.wallet.enums.WalletStatus;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
