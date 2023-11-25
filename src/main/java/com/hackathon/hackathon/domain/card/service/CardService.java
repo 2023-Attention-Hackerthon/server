@@ -63,12 +63,11 @@ public class CardService {
                 githubId(saveCard.getGithubId()).
                 build();
 
-        SuccessResponse apiResponse = SuccessResponse.builder().
+        return SuccessResponse.builder().
                 code(200).
                 message("카드 생성에 성공했습니다.").
                 data(cardCreateResponseDto).
                 build();
-        return apiResponse;
     }
 
     @Transactional
@@ -81,7 +80,7 @@ public class CardService {
                 cardStatus(updateCard.getCardStatus())
                 .build();
 
-        SuccessResponse apiResponse = SuccessResponse.builder().
+        SuccessResponse<Object> apiResponse = SuccessResponse.builder().
                 code(200).
                 message("카드 삭제에 성공했습니다.").
                 data(cardDeleteResponseDto).
@@ -103,7 +102,7 @@ public class CardService {
                 githubId(findCard.get().getGithubId()).
                 build();
 
-        SuccessResponse apiResponse = SuccessResponse.builder().
+        SuccessResponse<Object> apiResponse = SuccessResponse.builder().
                 code(200).
                 message("카드 생성에 성공했습니다.").
                 data(cardCreateResponseDto).
