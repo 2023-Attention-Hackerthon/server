@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/wallets")
@@ -46,6 +48,19 @@ public class WalletController {
         User user = authentiatedUserUtils.getCurrentUser();
         return walletService.deleteWallet(user, walletId);
     }
+
+    @Operation(description = "내가 만든 카드들(이미지) 지갑별로 보기")
+    @GetMapping("/cards/{walletId}")
+    public SuccessResponse<Object> getCardUrls(@RequestParam Long walletId){
+        User user = authentiatedUserUtils.getCurrentUser();
+        return walletService.getAllCardLinks(walletId);
+    }
+
+//    @Operation(description = "지갑에 여러 이미지 url 올리기")
+//    @PostMapping("/{walletId}")
+//    public List<String> uploadCard(@RequestParam Long walletId) {
+//
+//    }
 
 
 

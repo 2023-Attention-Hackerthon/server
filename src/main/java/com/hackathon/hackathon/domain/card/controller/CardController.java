@@ -44,10 +44,10 @@ public class CardController {
     }
 
     @Operation(description = "명함")
-    @PostMapping(value = "/image", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public SuccessResponse<Object> uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
+    @PostMapping(value = "/image/{walletId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public SuccessResponse<Object> uploadImage(@RequestParam("file") MultipartFile file, Long walletId) throws IOException {
         try {
-            String imageUrl = cardService.uploadImage(file);
+            String imageUrl = cardService.uploadImage(file, walletId);
             SuccessResponse<Object> successResponse = SuccessResponse.onSuccess(200,imageUrl);
             return successResponse;
         } catch (IOException e) {
