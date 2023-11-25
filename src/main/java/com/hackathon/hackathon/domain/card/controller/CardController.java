@@ -33,6 +33,16 @@ public class CardController {
     }
 
 
+    @PatchMapping("/cards/{cardId}/delete")
+    public ResponseEntity<?> deleteCard(@PathVariable Long cardId) {
+        return cardService.deleteCard(cardId);
+    }
+
+    @GetMapping("cards/{cardId}")
+    public ResponseEntity<?> getCardInfo(@PathVariable Long cardId) {
+        return cardService.getCardInfo(cardId);
+    }
+
     @Operation(description = "명함")
     @PostMapping(value = "/image", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public SuccessResponse<Object> uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
@@ -43,10 +53,5 @@ public class CardController {
         } catch (IOException e) {
             throw  new IllegalArgumentException("오류");
         }
-    }
-
-    @PatchMapping("/cards/{cardId}/delete")
-    public ResponseEntity<?> deleteCard(@PathVariable Long cardId) {
-        return cardService.deleteCard(cardId);
     }
 }
