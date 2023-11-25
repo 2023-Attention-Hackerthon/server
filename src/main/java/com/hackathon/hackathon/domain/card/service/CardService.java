@@ -19,6 +19,7 @@ public class CardService {
     private final CardRepository cardRepository;
     private final WalletRepository walletRepository;
 
+    @Transactional
     public ResponseEntity<?> createCard(CardCreateRequestDto cardCreateRequestDto, Long walletId) {
         Card card = Card.builder().
                 nickname(cardCreateRequestDto.getNickname()).
