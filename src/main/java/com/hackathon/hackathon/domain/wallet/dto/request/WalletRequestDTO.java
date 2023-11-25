@@ -9,7 +9,4 @@ public class WalletRequestDTO {
 
     @Schema(description = "지갑명", example = "내지갑")
     private String name;
-
-    @Schema(description = "유저ID", example = "1")
-    private Long userId;
 }
