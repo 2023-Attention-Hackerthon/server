@@ -8,6 +8,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Entity
 @Builder
 @AllArgsConstructor
@@ -24,6 +26,10 @@ public class Wallet extends BaseTimeEntity {
     private User user;
     @Enumerated(EnumType.STRING)
     protected WalletStatus status;
+
+    @ElementCollection
+    private List<String> imageUrls;
+
     public Wallet() {
         // 기본 생성자
         this.status = WalletStatus.ACTIVE;  // 생성자에서도 ACTIVE로 초기화
@@ -35,4 +41,8 @@ public class Wallet extends BaseTimeEntity {
         this.status = newStatus;
     }
 
+    @Transactional
+    public void addImageUrl(String imageUrl) {
+        this.imageUrls.add(imageUrl);
+    }
 }
