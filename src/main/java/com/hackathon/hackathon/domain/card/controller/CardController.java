@@ -12,10 +12,16 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/wallets")
+@RequestMapping("/api/cards")
 public class CardController {
 
     private final CardService cardService;
@@ -37,5 +43,10 @@ public class CardController {
         } catch (IOException e) {
             throw  new IllegalArgumentException("오류");
         }
+    }
+
+    @PatchMapping("/cards/{cardId}/delete")
+    public ResponseEntity<?> deleteCard(@PathVariable Long cardId) {
+        return cardService.deleteCard(cardId);
     }
 }
