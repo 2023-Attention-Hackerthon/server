@@ -15,8 +15,10 @@ public class ChatGptResponseDTO {
     private String object;
     private long created;
     private String model;
-    private Usage usage;
+    @JsonProperty("system_fingerprint")
+    private String systemFingerprint;
     private List<Choice> choices;
+    private Usage usage;
 
     @Getter
     @Setter
@@ -32,9 +34,9 @@ public class ChatGptResponseDTO {
     @Getter
     @Setter
     public static class Choice {
+        private int index;
         private ChatGptMessage message;
         @JsonProperty("finish_reason")
         private String finishReason;
-        private int index;
     }
 }

@@ -1,7 +1,9 @@
 package com.hackathon.hackathon.domain.chatGPT.entity;
 
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 public class ChatGptMessage {
     private String role;
     private String content;
