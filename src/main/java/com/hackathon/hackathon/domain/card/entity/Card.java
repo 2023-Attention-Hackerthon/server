@@ -2,6 +2,7 @@ package com.hackathon.hackathon.domain.card.entity;
 
 import com.hackathon.hackathon.domain.card.enums.CardStatus;
 import com.hackathon.hackathon.domain.card.enums.Gender;
+import com.hackathon.hackathon.domain.user.entity.User;
 import com.hackathon.hackathon.domain.wallet.entity.Wallet;
 import com.hackathon.hackathon.global.entity.BaseTimeEntity;
 import jakarta.persistence.Entity;
@@ -53,6 +54,9 @@ public class Card extends BaseTimeEntity {
 
     private String githubId;
     private String colorCode;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
 
     @Enumerated(EnumType.STRING)
     @NotNull

@@ -1,5 +1,8 @@
 package com.hackathon.hackathon.domain.wallet.service;
 
+import com.hackathon.hackathon.domain.card.dto.response.CardCreateResponseDto;
+import com.hackathon.hackathon.domain.card.entity.Card;
+import com.hackathon.hackathon.domain.card.repository.CardRepository;
 import com.hackathon.hackathon.domain.user.entity.User;
 import com.hackathon.hackathon.domain.user.repositroy.UserRepository;
 import com.hackathon.hackathon.domain.wallet.dto.request.WalletRequestDTO;
@@ -28,6 +31,7 @@ import static com.hackathon.hackathon.domain.wallet.enums.WalletStatus.DEACTIVE;
 public class WalletService {
 
     private final WalletRepository walletRepository;
+    private final CardRepository cardRepository;
     // 지갑 만들기
     @Transactional
     public SuccessResponse<Object> createWallet(User user, WalletRequestDTO walletRequestDTO) {
@@ -115,4 +119,26 @@ public class WalletService {
         return SuccessResponse.onSuccess(200,wallets);
     }
 
+    public SuccessResponse<Object> getAllCard(User user) {
+        List<Card> cards = cardRepository.findAll();
+        List<CardCreateResponseDto> cardDTOs = cards.stream()
+                .map(saveCard -> CardCreateResponseDto.builder().
+                        id(saveCard.getId()).
+                        nickname(saveCard.getNickname()).
+                        contact(saveCard.getContact()).
+                        gender(saveCard.getGender()).
+                        instagramId(saveCard.getInstagramId()).
+                        blogUrl(saveCard.getBlogUrl()).
+                        youtubeUrl(saveCard.getYoutubeUrl()).
+                        githubId(saveCard.getGithubId()).
+                        cardName(saveCard.getCardName()).
+                        introduce(saveCard.getIntroduce()).
+                        age(saveCard.getAge()).
+                        adjective(saveCard.getAdjective()).
+                        mbti(saveCard.getMbti()).
+                        colorCode(saveCard.getColorCode()).
+                        build())
+                .collect(Collectors.toList());
+        return SuccessResponse.onSuccess(200, cardDTOs);
+    }
 }

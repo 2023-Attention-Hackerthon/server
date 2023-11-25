@@ -56,6 +56,14 @@ public class WalletController {
         return walletService.getAllCardLinks(walletId);
     }
 
+    @Operation(description = "내가 만든 카드들 다 보기")
+    @GetMapping("/cards")
+    public SuccessResponse<Object> getCards(){
+        User user = authentiatedUserUtils.getCurrentUser();
+        return walletService.getAllCard(user);
+    }
+
+
 //    @Operation(description = "지갑에 여러 이미지 url 올리기")
 //    @PostMapping("/{walletId}")
 //    public List<String> uploadCard(@RequestParam Long walletId) {
