@@ -2,8 +2,10 @@ package com.hackathon.hackathon.domain.card.controller;
 
 import com.hackathon.hackathon.domain.card.dto.request.CardCreateRequestDto;
 import com.hackathon.hackathon.domain.card.service.CardService;
+import com.hackathon.hackathon.domain.user.entity.User;
 import com.hackathon.hackathon.global.S3.S3Service;
 import com.hackathon.hackathon.global.response.SuccessResponse;
+import com.hackathon.hackathon.global.utils.AuthentiatedUserUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CardController {
 
     private final CardService cardService;
+    private final AuthentiatedUserUtils authentiatedUserUtils;
 
     @PostMapping("/{walletId}/create")
     public ResponseEntity<?> createCard(@RequestBody CardCreateRequestDto cardCreateRequestDto,
@@ -35,12 +38,14 @@ public class CardController {
 
     @PatchMapping("/cards/{cardId}/delete")
     public ResponseEntity<?> deleteCard(@PathVariable Long cardId) {
-        return cardService.deleteCard(cardId);
+        User currentUser = authentiatedUserUtils.getCurrentUser();
+        return cardService.deleteCard(currentUser, cardId);
     }
 
     @GetMapping("cards/{cardId}")
-    public ResponseEntity<?> getCardInfo(@PathVariable Long cardId) {
-        return cardService.getCardInfo(cardId);
+    public ResponseEntity<?> getCardInfo(@PathVariable Long cardId) throws Exception {
+        User currentUser = authentiatedUserUtils.getCurrentUser();
+        return cardService.getCardInfo(currentUser, cardId);
     }
 
     @Operation(description = "명함")
