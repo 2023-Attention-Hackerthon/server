@@ -19,6 +19,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Builder
 @Getter
@@ -32,11 +34,16 @@ public class Card extends BaseTimeEntity {
 
     @NotNull
     private String nickname;
+    private String cardName;
 
     private String contact;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
+    private int age;
+    private String mbti;
+    private List<String> adjective;
+    private String introduce;
 
     private String instagramId;
 

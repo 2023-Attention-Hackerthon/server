@@ -19,6 +19,7 @@ import com.hackathon.hackathon.domain.wallet.repository.WalletRepository;
 import com.hackathon.hackathon.global.S3.S3Service;
 import com.hackathon.hackathon.global.response.SuccessResponse;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +46,11 @@ public class CardService {
                 blogUrl(cardCreateRequestDto.getBlogUrl()).
                 youtubeUrl(cardCreateRequestDto.getYoutubeUrl()).
                 githubId(cardCreateRequestDto.getGithubId()).
+                cardName(cardCreateRequestDto.getCardName()).
+                introduce(cardCreateRequestDto.getIntroduce()).
+                age(cardCreateRequestDto.getAge()).
+                adjective(cardCreateRequestDto.getAdjective()).
+                mbti(cardCreateRequestDto.getMbti()).
                 cardStatus(ACTIVE).
                 wallet(walletRepository.findById(walletId).orElse(null)).
                 build();
@@ -65,6 +71,12 @@ public class CardService {
                 blogUrl(saveCard.getBlogUrl()).
                 youtubeUrl(saveCard.getYoutubeUrl()).
                 githubId(saveCard.getGithubId()).
+                cardName(saveCard.getCardName()).
+                introduce(saveCard.getIntroduce()).
+                age(saveCard.getAge()).
+                adjective(saveCard.getAdjective()).
+                mbti(saveCard.getMbti()).
+                mbti(saveCard.getMbti()).
                 build();
 
         return SuccessResponse.builder().
@@ -95,10 +107,19 @@ public class CardService {
     }
 
     public ResponseEntity<?> getCardInfo(User currentUser, Long cardId) throws Exception {
-        checkUserPrivilege(currentUser, cardId);
+        //checkUserPrivilege(currentUser, cardId);
         Optional<Card> findCard = cardRepository.findById(cardId);
+        User user = findCard.get().getWallet().getUser();
+        if (user.getId() != currentUser.getId()) {
+            throw new IllegalArgumentException("wrong user");
+        }
         CardCreateResponseDto cardCreateResponseDto = CardCreateResponseDto.builder().
                 id(findCard.get().getId()).
+                cardName(findCard.get().getCardName()).
+                introduce(findCard.get().getIntroduce()).
+                age(findCard.get().getAge()).
+                mbti(findCard.get().getMbti()).
+                adjective(findCard.get().getAdjective()).
                 nickname(findCard.get().getNickname()).
                 contact(findCard.get().getContact()).
                 gender(findCard.get().getGender()).

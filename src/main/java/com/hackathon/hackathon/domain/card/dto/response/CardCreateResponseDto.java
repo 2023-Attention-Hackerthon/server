@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 public class CardCreateResponseDto {
@@ -17,11 +19,17 @@ public class CardCreateResponseDto {
 
     @NotNull
     private String nickname;
+    private String cardName;
 
     private String contact;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
+
+    private int age;
+    private String mbti;
+    private List<String> adjective;
+    private String introduce;
 
     private String instagramId;
 
@@ -33,7 +41,7 @@ public class CardCreateResponseDto {
 
     @Builder
     public CardCreateResponseDto(Long id, String nickname, String contact, Gender gender, String instagramId,
-                                 String blogUrl, String youtubeUrl, String githubId) {
+                                 String blogUrl, String youtubeUrl, String githubId, String cardName, String introduce, String mbti, List<String> adjective, int age) {
         this.id = id;
         this.nickname = nickname;
         this.contact = contact;
@@ -42,5 +50,10 @@ public class CardCreateResponseDto {
         this.blogUrl = blogUrl;
         this.youtubeUrl = youtubeUrl;
         this.githubId = githubId;
+        this.cardName = cardName;
+        this.introduce = introduce;
+        this.mbti = mbti;
+        this.age = age;
+        this.adjective = adjective;
     }
 }
