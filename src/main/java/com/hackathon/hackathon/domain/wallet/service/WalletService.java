@@ -137,6 +137,7 @@ public class WalletService {
                         adjective(saveCard.getAdjective()).
                         mbti(saveCard.getMbti()).
                         colorCode(saveCard.getColorCode()).
+                        walletId(saveCard.getWallet().getId()).
                         build())
                 .collect(Collectors.toList());
         return SuccessResponse.onSuccess(200, cardDTOs);
