@@ -2,6 +2,7 @@ package com.hackathon.hackathon.domain.user.usecase;
 
 import com.hackathon.hackathon.domain.user.adapter.UserAdaptor;
 import com.hackathon.hackathon.domain.user.dto.response.AccountTokenDto;
+import com.hackathon.hackathon.domain.user.entity.AuthInfo;
 import com.hackathon.hackathon.domain.user.entity.LoginType;
 import com.hackathon.hackathon.domain.user.entity.User;
 import com.hackathon.hackathon.domain.user.service.UserDomainService;
@@ -22,7 +23,10 @@ public class LoginUseCase {
     public AccountTokenDto execute(String loginType, String idToken){
         UserInfoFromIdToken userInfo = loginByIdTokenProcessor.execute(loginType, idToken);
         if (!userAdaptor.checkEmail(userInfo.getEmail())){
-            return AccountTokenDto.notRegistered();
+            AuthInfo authInfo = AuthInfo.authInfoForSignUp((LoginType.fromValue(loginType)), userInfo.getEmail());
+            System.out.println(authInfo);
+            User user = userDomainService.signUp(authInfo);
+            return generateAccountTokenProcessor.createToken(user);
         }
 
         User user = userDomainService.login(LoginType.fromValue(loginType), userInfo.getEmail());
