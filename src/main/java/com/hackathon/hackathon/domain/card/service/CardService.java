@@ -42,11 +42,16 @@ public class CardService {
                 wallet(walletRepository.findById(walletId).orElse(null)).
                 build();
         Card saveCard = cardRepository.save(card);
-        Long saveId = saveCard.getId();
-        String saveNickname = saveCard.getNickname();
+
         CardCreateResponseDto cardCreateResponseDto = CardCreateResponseDto.builder().
-                id(saveId).
-                name(saveNickname).
+                id(saveCard.getId()).
+                nickname(saveCard.getNickname()).
+                contact(saveCard.getContact()).
+                gender(saveCard.getGender()).
+                instagramId(saveCard.getInstagramId()).
+                blogUrl(saveCard.getBlogUrl()).
+                youtubeUrl(saveCard.getYoutubeUrl()).
+                githubId(saveCard.getGithubId()).
                 build();
 
         SuccessResponse apiResponse = SuccessResponse.builder().
