@@ -6,15 +6,17 @@ import com.hackathon.hackathon.domain.card.dto.request.CardCreateRequestDto;
 import com.hackathon.hackathon.domain.card.dto.response.CardCreateResponseDto;
 import com.hackathon.hackathon.domain.card.dto.response.CardDeleteResponseDto;
 import com.hackathon.hackathon.domain.card.entity.Card;
-import com.hackathon.hackathon.domain.card.enums.CardStatus;
 import com.hackathon.hackathon.domain.card.repository.CardRepository;
 import com.hackathon.hackathon.domain.wallet.repository.WalletRepository;
+import com.hackathon.hackathon.global.S3.S3Service;
 import com.hackathon.hackathon.global.response.SuccessResponse;
+import java.io.IOException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +25,7 @@ public class CardService {
 
     private final CardRepository cardRepository;
     private final WalletRepository walletRepository;
+    private final S3Service s3Service;
 
     @Transactional
     public ResponseEntity<?> createCard(CardCreateRequestDto cardCreateRequestDto, Long walletId) {
@@ -70,5 +73,10 @@ public class CardService {
                 build();
 
         return ResponseEntity.ok(apiResponse);
+    }
+
+    public String uploadImage(MultipartFile file) throws IOException {
+        String imageUrl = s3Service.upload(file);
+        return imageUrl;
     }
 }
