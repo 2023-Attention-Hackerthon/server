@@ -31,7 +31,7 @@ public class CardService {
     private final S3Service s3Service;
 
     @Transactional
-    public ResponseEntity<?> createCard(CardCreateRequestDto cardCreateRequestDto, Long walletId) {
+    public ResponseEntity<?> createCard(User currentUser, CardCreateRequestDto cardCreateRequestDto, Long walletId) {
         Card card = Card.builder().
                 nickname(cardCreateRequestDto.getNickname()).
                 contact(cardCreateRequestDto.getContact()).
@@ -105,7 +105,7 @@ public class CardService {
 
         SuccessResponse<Object> apiResponse = SuccessResponse.builder().
                 code(200).
-                message("카드 생성에 성공했습니다.").
+                message("카드 조회에 성공했습니다.").
                 data(cardCreateResponseDto).
                 build();
 
@@ -113,8 +113,8 @@ public class CardService {
     }
 
     private static void checkUserPrivilege(User currentUser, Long cardId) throws Exception {
-        if (currentUser.getId().equals(cardId)) {
-            throw new Exception("[ERROR] 본인의 카드가 아니면 삭제할 수 없습니다.");
+        if (!currentUser.getId().equals(cardId)) {
+            throw new Exception("[ERROR] 본인의 카드가 아니면 접근할 수 없습니다.");
         }
     }
 
