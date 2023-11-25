@@ -35,7 +35,7 @@ public class ChatGptController {
         String code = "200";
         ChatGptColorResponseDTO chatGptColorResponseDTO = null;
         try {
-            chatGptColorResponseDTO = chatGptService.askQuestion(questionRequest);
+            chatGptColorResponseDTO = chatGptService.askQuestion(questionRequest.getQuestion());
             System.out.println(chatGptColorResponseDTO);
         } catch (Exception e) {
 //            apiResponse.printErrorMessage(e);

@@ -52,6 +52,7 @@ public class Card extends BaseTimeEntity {
     private String youtubeUrl;
 
     private String githubId;
+    private String colorCode;
 
     @Enumerated(EnumType.STRING)
     @NotNull

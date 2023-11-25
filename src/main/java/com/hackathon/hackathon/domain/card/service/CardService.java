@@ -13,6 +13,10 @@ import com.hackathon.hackathon.domain.card.dto.response.CardDeleteResponseDto;
 import com.hackathon.hackathon.domain.card.entity.Card;
 import com.hackathon.hackathon.domain.card.exception.CardException;
 import com.hackathon.hackathon.domain.card.repository.CardRepository;
+import com.hackathon.hackathon.domain.chatGPT.dto.request.ChatGptRequestDTO;
+import com.hackathon.hackathon.domain.chatGPT.dto.request.QuestionRequestDTO;
+import com.hackathon.hackathon.domain.chatGPT.dto.response.ChatGptColorResponseDTO;
+import com.hackathon.hackathon.domain.chatGPT.service.ChatGptService;
 import com.hackathon.hackathon.domain.user.entity.User;
 import com.hackathon.hackathon.domain.wallet.entity.Wallet;
 import com.hackathon.hackathon.domain.wallet.repository.WalletRepository;
@@ -35,9 +39,16 @@ public class CardService {
     private final CardRepository cardRepository;
     private final WalletRepository walletRepository;
     private final S3Service s3Service;
+    private final ChatGptService chatGptService;
 
     @Transactional
     public ResponseEntity<?> createCard(User currentUser, CardCreateRequestDto cardCreateRequestDto, Long walletId) {
+
+        String chatGptRequestSentence = generateAdjectiveSentence(cardCreateRequestDto.getAdjective());
+        //초은이가 해줄것
+        ChatGptColorResponseDTO result = chatGptService.askQuestion(chatGptRequestSentence);
+        //String result = "#sffsgsdgf";
+
         Card card = Card.builder().
                 nickname(cardCreateRequestDto.getNickname()).
                 contact(cardCreateRequestDto.getContact()).
@@ -52,6 +63,7 @@ public class CardService {
                 adjective(cardCreateRequestDto.getAdjective()).
                 mbti(cardCreateRequestDto.getMbti()).
                 cardStatus(ACTIVE).
+                colorCode(result.getColor()).
                 wallet(walletRepository.findById(walletId).orElse(null)).
                 build();
         Card saveCard = cardRepository.save(card);
@@ -60,6 +72,12 @@ public class CardService {
 
         return ResponseEntity.ok(apiResponse);
     }
+
+    public String generateAdjectiveSentence(List<String> adjectives) {
+        String adjectiveSentence = "[" + String.join(", ", adjectives) + "]";
+        return adjectiveSentence + " " + "와 어울리는 색을 #FFB3B3,#FFD1B3,#FFF0B3,#F0FFB3,#D1FFB3,#B3FFB3,#B3FFD1,#B3FFF0,#B3F0FF,#B3D1FF,#B3B3FF,#D1B3FF,#F0B3FF,#FFB3F0,#FFB3D1 중에 하나 골라. 답변은 한 단어로. 답 예시 : #B3F0FF";
+    }
+
 
     private static SuccessResponse getSuccessResponse(Card saveCard) {
         CardCreateResponseDto cardCreateResponseDto = CardCreateResponseDto.builder().
@@ -76,8 +94,10 @@ public class CardService {
                 age(saveCard.getAge()).
                 adjective(saveCard.getAdjective()).
                 mbti(saveCard.getMbti()).
-                mbti(saveCard.getMbti()).
+                colorCode(saveCard.getColorCode()).
                 build();
+
+
 
         return SuccessResponse.builder().
                 code(OK.getValue()).
@@ -127,6 +147,7 @@ public class CardService {
                 blogUrl(findCard.get().getBlogUrl()).
                 youtubeUrl(findCard.get().getYoutubeUrl()).
                 githubId(findCard.get().getGithubId()).
+                colorCode(findCard.get().getColorCode()).
                 build();
 
         SuccessResponse<Object> apiResponse = SuccessResponse.builder().

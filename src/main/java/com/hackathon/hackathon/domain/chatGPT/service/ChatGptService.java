@@ -58,11 +58,11 @@ public class ChatGptService {
 
         return responseEntity.getBody();
     }
-    public ChatGptColorResponseDTO askQuestion(QuestionRequestDTO questionRequest){
+    public ChatGptColorResponseDTO askQuestion(String questionRequest){
         List<ChatGptMessage> messages = new ArrayList<>();
         messages.add(ChatGptMessage.builder()
                 .role(ChatGptConfig.ROLE)
-                .content(questionRequest.getQuestion())
+                .content(questionRequest)
                 .build());
         ChatGptResponseDTO test = buildHttpEntity( new ChatGptRequestDTO(
                 ChatGptConfig.CHAT_MODEL,
@@ -72,18 +72,18 @@ public class ChatGptService {
                 messages
                 //ChatGptConfig.TOP_P
         ));
-        System.out.println(test.getChoices());
-
-        // Json에서 color만 추출해 반환
-        ChatGptResponseDTO.Choice firstChoice = test.getChoices().get(0);
-        String tt = test.getChoices().get(0).getFinishReason();
-        System.out.println(tt);
-        System.out.println(firstChoice);
-        test.getChoices().get(0).getMessage();
-        String color = String.valueOf(firstChoice.getMessage());
-        System.out.println(color.toString());
+//        System.out.println(test.getChoices().get(1).getMessage().getContent());
+//
+//        // Json에서 color만 추출해 반환
+//        ChatGptResponseDTO.Choice firstChoice = test.getChoices().get(0);
+//        String tt = test.getChoices().get(0).getFinishReason();
+//        System.out.println(tt);
+//        System.out.println(firstChoice);
+//        test.getChoices().get(0).getMessage();
+//        String color = String.valueOf(firstChoice.getMessage());
+//        System.out.println(color.toString());
         ChatGptColorResponseDTO chatGptColorResponseDTO = ChatGptColorResponseDTO.builder()
-                        .color(color)
+                        .color(test.getChoices().get(0).getMessage().getContent())
                         .build();
         return chatGptColorResponseDTO;
     }
