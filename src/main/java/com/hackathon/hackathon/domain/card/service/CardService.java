@@ -43,6 +43,12 @@ public class CardService {
                 build();
         Card saveCard = cardRepository.save(card);
 
+        SuccessResponse apiResponse = getSuccessResponse(saveCard);
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    private static SuccessResponse getSuccessResponse(Card saveCard) {
         CardCreateResponseDto cardCreateResponseDto = CardCreateResponseDto.builder().
                 id(saveCard.getId()).
                 nickname(saveCard.getNickname()).
@@ -59,8 +65,7 @@ public class CardService {
                 message("카드 생성에 성공했습니다.").
                 data(cardCreateResponseDto).
                 build();
-
-        return ResponseEntity.ok(apiResponse);
+        return apiResponse;
     }
 
     @Transactional
@@ -77,6 +82,28 @@ public class CardService {
                 code(200).
                 message("카드 삭제에 성공했습니다.").
                 data(cardDeleteResponseDto).
+                build();
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    public ResponseEntity<?> getCardInfo(Long cardId) {
+        Optional<Card> findCard = cardRepository.findById(cardId);
+        CardCreateResponseDto cardCreateResponseDto = CardCreateResponseDto.builder().
+                id(findCard.get().getId()).
+                nickname(findCard.get().getNickname()).
+                contact(findCard.get().getContact()).
+                gender(findCard.get().getGender()).
+                instagramId(findCard.get().getInstagramId()).
+                blogUrl(findCard.get().getBlogUrl()).
+                youtubeUrl(findCard.get().getYoutubeUrl()).
+                githubId(findCard.get().getGithubId()).
+                build();
+
+        SuccessResponse apiResponse = SuccessResponse.builder().
+                code(200).
+                message("카드 생성에 성공했습니다.").
+                data(cardCreateResponseDto).
                 build();
 
         return ResponseEntity.ok(apiResponse);
