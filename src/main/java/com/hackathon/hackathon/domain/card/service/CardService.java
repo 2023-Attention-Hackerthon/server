@@ -8,9 +8,9 @@ import com.hackathon.hackathon.domain.card.dto.response.CardCreateResponseDto;
 import com.hackathon.hackathon.domain.card.dto.response.CardDeleteResponseDto;
 import com.hackathon.hackathon.domain.card.entity.Card;
 import com.hackathon.hackathon.domain.card.repository.CardRepository;
+import com.hackathon.hackathon.domain.user.entity.User;
 import com.hackathon.hackathon.domain.wallet.entity.Wallet;
 import com.hackathon.hackathon.domain.wallet.repository.WalletRepository;
-import com.hackathon.hackathon.domain.wallet.service.WalletService;
 import com.hackathon.hackathon.global.S3.S3Service;
 import com.hackathon.hackathon.global.response.SuccessResponse;
 import java.io.IOException;
@@ -28,7 +28,6 @@ public class CardService {
 
     private final CardRepository cardRepository;
     private final WalletRepository walletRepository;
-    private final WalletService walletService;
     private final S3Service s3Service;
 
     @Transactional
@@ -63,16 +62,16 @@ public class CardService {
                 githubId(saveCard.getGithubId()).
                 build();
 
-        SuccessResponse apiResponse = SuccessResponse.builder().
+        return SuccessResponse.builder().
                 code(200).
                 message("카드 생성에 성공했습니다.").
                 data(cardCreateResponseDto).
                 build();
-        return apiResponse;
     }
 
     @Transactional
-    public ResponseEntity<?> deleteCard(Long cardId) {
+    public ResponseEntity<?> deleteCard(User currentUser, Long cardId) throws Exception {
+        checkUserPrivilege(currentUser, cardId);
         Optional<Card> findCard = cardRepository.findById(cardId);
         Card updateCard = findCard.get().updateCardStatus(DEACTIVE);
 
@@ -81,7 +80,7 @@ public class CardService {
                 cardStatus(updateCard.getCardStatus())
                 .build();
 
-        SuccessResponse apiResponse = SuccessResponse.builder().
+        SuccessResponse<Object> apiResponse = SuccessResponse.builder().
                 code(200).
                 message("카드 삭제에 성공했습니다.").
                 data(cardDeleteResponseDto).
@@ -90,7 +89,8 @@ public class CardService {
         return ResponseEntity.ok(apiResponse);
     }
 
-    public ResponseEntity<?> getCardInfo(Long cardId) {
+    public ResponseEntity<?> getCardInfo(User currentUser, Long cardId) throws Exception {
+        checkUserPrivilege(currentUser, cardId);
         Optional<Card> findCard = cardRepository.findById(cardId);
         CardCreateResponseDto cardCreateResponseDto = CardCreateResponseDto.builder().
                 id(findCard.get().getId()).
@@ -103,13 +103,19 @@ public class CardService {
                 githubId(findCard.get().getGithubId()).
                 build();
 
-        SuccessResponse apiResponse = SuccessResponse.builder().
+        SuccessResponse<Object> apiResponse = SuccessResponse.builder().
                 code(200).
                 message("카드 생성에 성공했습니다.").
                 data(cardCreateResponseDto).
                 build();
 
         return ResponseEntity.ok(apiResponse);
+    }
+
+    private static void checkUserPrivilege(User currentUser, Long cardId) throws Exception {
+        if (currentUser.getId().equals(cardId)) {
+            throw new Exception("[ERROR] 본인의 카드가 아니면 삭제할 수 없습니다.");
+        }
     }
 
     @Transactional
