@@ -36,13 +36,13 @@ public class CardController {
     }
 
 
-    @PatchMapping("/cards/{cardId}/delete")
-    public ResponseEntity<?> deleteCard(@PathVariable Long cardId) {
+    @PatchMapping("/{cardId}/delete")
+    public ResponseEntity<?> deleteCard(@PathVariable Long cardId) throws Exception {
         User currentUser = authentiatedUserUtils.getCurrentUser();
         return cardService.deleteCard(currentUser, cardId);
     }
 
-    @GetMapping("cards/{cardId}")
+    @GetMapping("/{cardId}")
     public ResponseEntity<?> getCardInfo(@PathVariable Long cardId) throws Exception {
         User currentUser = authentiatedUserUtils.getCurrentUser();
         return cardService.getCardInfo(currentUser, cardId);
