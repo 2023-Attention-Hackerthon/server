@@ -1,8 +1,13 @@
 package com.hackathon.hackathon.domain.chatGPT.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hackathon.hackathon.domain.chatGPT.dto.request.ChatGptRequestDTO;
 import com.hackathon.hackathon.domain.chatGPT.dto.request.QuestionRequestDTO;
+import com.hackathon.hackathon.domain.chatGPT.dto.response.ChatGptColorResponseDTO;
 import com.hackathon.hackathon.domain.chatGPT.dto.response.ChatGptResponseDTO;
+import com.hackathon.hackathon.domain.chatGPT.dto.response.ChatGptResponseDTO.Choice;
 import com.hackathon.hackathon.domain.chatGPT.config.ChatGptConfig;
 import com.hackathon.hackathon.domain.chatGPT.entity.ChatGptMessage;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +21,7 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,7 +58,7 @@ public class ChatGptService {
 
         return responseEntity.getBody();
     }
-    public ChatGptResponseDTO askQuestion(QuestionRequestDTO questionRequest){
+    public ChatGptColorResponseDTO askQuestion(QuestionRequestDTO questionRequest){
         List<ChatGptMessage> messages = new ArrayList<>();
         messages.add(ChatGptMessage.builder()
                 .role(ChatGptConfig.ROLE)
@@ -67,7 +73,18 @@ public class ChatGptService {
                 //ChatGptConfig.TOP_P
         ));
         System.out.println(test.getChoices());
-        return test;
 
+        // Json에서 color만 추출해 반환
+        ChatGptResponseDTO.Choice firstChoice = test.getChoices().get(0);
+        String tt = test.getChoices().get(0).getFinishReason();
+        System.out.println(tt);
+        System.out.println(firstChoice);
+        test.getChoices().get(0).getMessage();
+        String color = String.valueOf(firstChoice.getMessage());
+        System.out.println(color.toString());
+        ChatGptColorResponseDTO chatGptColorResponseDTO = ChatGptColorResponseDTO.builder()
+                        .color(color)
+                        .build();
+        return chatGptColorResponseDTO;
     }
 }

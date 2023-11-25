@@ -1,6 +1,7 @@
 package com.hackathon.hackathon.domain.chatGPT.controller;
 
 import com.hackathon.hackathon.domain.chatGPT.dto.request.QuestionRequestDTO;
+import com.hackathon.hackathon.domain.chatGPT.dto.response.ChatGptColorResponseDTO;
 import com.hackathon.hackathon.domain.chatGPT.dto.response.ChatGptResponseDTO;
 import com.hackathon.hackathon.domain.chatGPT.service.ChatGptService;
 import com.hackathon.hackathon.global.response.SuccessResponse;
@@ -26,21 +27,21 @@ public class ChatGptController {
 
     @Operation(summary = "Question to Chat-GPT")
     @PostMapping("/question")
-    public SuccessResponse<ChatGptResponseDTO> sendQuestion(
+    public SuccessResponse<ChatGptColorResponseDTO> sendQuestion(
             Locale locale,
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestBody QuestionRequestDTO questionRequest) {
         String code = "200";
-        ChatGptResponseDTO chatGptResponse = null;
+        ChatGptColorResponseDTO chatGptColorResponseDTO = null;
         try {
-            chatGptResponse = chatGptService.askQuestion(questionRequest);
-            System.out.println(chatGptResponse);
+            chatGptColorResponseDTO = chatGptService.askQuestion(questionRequest);
+            System.out.println(chatGptColorResponseDTO);
         } catch (Exception e) {
 //            apiResponse.printErrorMessage(e);
             code = e.getMessage();
         }
         //return 부분은 자유롭게 수정하시면됩니다. ex)return chatGptResponse;
-        return SuccessResponse.onSuccess(200, chatGptResponse);
+        return  SuccessResponse.onSuccess(200, chatGptColorResponseDTO);
     }
 }
