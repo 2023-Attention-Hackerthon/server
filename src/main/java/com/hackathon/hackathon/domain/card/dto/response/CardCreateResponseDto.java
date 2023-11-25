@@ -38,10 +38,11 @@ public class CardCreateResponseDto {
     private String youtubeUrl;
 
     private String githubId;
+    private String colorCode;
 
     @Builder
     public CardCreateResponseDto(Long id, String nickname, String contact, Gender gender, String instagramId,
-                                 String blogUrl, String youtubeUrl, String githubId, String cardName, String introduce, String mbti, List<String> adjective, int age) {
+                                 String blogUrl, String youtubeUrl, String githubId, String cardName, String introduce, String mbti, List<String> adjective, int age, String colorCode) {
         this.id = id;
         this.nickname = nickname;
         this.contact = contact;
@@ -55,5 +56,6 @@ public class CardCreateResponseDto {
         this.mbti = mbti;
         this.age = age;
         this.adjective = adjective;
+        this.colorCode = colorCode;
     }
 }
