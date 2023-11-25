@@ -47,6 +47,7 @@ public class Card extends BaseTimeEntity {
     private String githubId;
 
     @Enumerated(EnumType.STRING)
+    @NotNull
     private CardStatus cardStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)

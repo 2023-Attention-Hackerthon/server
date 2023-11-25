@@ -1,5 +1,6 @@
 package com.hackathon.hackathon.domain.card.service;
 
+import static com.hackathon.hackathon.domain.card.enums.CardStatus.ACTIVE;
 import static com.hackathon.hackathon.domain.card.enums.CardStatus.DEACTIVE;
 
 import com.hackathon.hackathon.domain.card.dto.request.CardCreateRequestDto;
@@ -37,6 +38,7 @@ public class CardService {
                 blogUrl(cardCreateRequestDto.getBlogUrl()).
                 youtubeUrl(cardCreateRequestDto.getYoutubeUrl()).
                 githubId(cardCreateRequestDto.getGithubId()).
+                cardStatus(ACTIVE).
                 wallet(walletRepository.findById(walletId).orElse(null)).
                 build();
         Card saveCard = cardRepository.save(card);
