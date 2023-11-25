@@ -5,6 +5,7 @@ import com.hackathon.hackathon.domain.user.repositroy.UserRepository;
 import com.hackathon.hackathon.domain.wallet.dto.request.WalletRequestDTO;
 import com.hackathon.hackathon.domain.wallet.dto.response.WalletResponseDTO;
 import com.hackathon.hackathon.domain.wallet.entity.Wallet;
+import com.hackathon.hackathon.domain.wallet.enums.WalletStatus;
 import com.hackathon.hackathon.domain.wallet.repository.WalletRepository;
 import com.hackathon.hackathon.global.response.SuccessResponse;
 import com.hackathon.hackathon.global.utils.AuthentiatedUserUtils;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.hackathon.hackathon.domain.wallet.enums.WalletStatus.ACTIVE;
 import static com.hackathon.hackathon.domain.wallet.enums.WalletStatus.DEACTIVE;
@@ -60,7 +62,11 @@ public class WalletService {
 
     public SuccessResponse<Object> getWallets(User user) {
         List<Wallet> wallets = walletRepository.findAllByUserId(user.getId());
-        return SuccessResponse.onSuccess(200,wallets);
+        // status가 ACTIVE인 Wallet만 필터링
+        List<Wallet> activeWallets = wallets.stream()
+                .filter(wallet -> WalletStatus.ACTIVE.equals(wallet.getStatus()))
+                .collect(Collectors.toList());
+        return SuccessResponse.onSuccess(200,activeWallets);
     }
 
 
@@ -78,4 +84,11 @@ public class WalletService {
         walletRepository.save(wallet);
         return wallet;
     }
+
+    public SuccessResponse<Object> getAllCardLinks(Long walletId) {
+        Wallet wallet = walletRepository.findById(walletId).get();
+        List<String> wallets = wallet.getImageUrls();
+        return SuccessResponse.onSuccess(200,wallets);
+    }
+
 }

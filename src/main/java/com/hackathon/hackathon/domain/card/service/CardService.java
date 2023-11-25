@@ -8,7 +8,9 @@ import com.hackathon.hackathon.domain.card.dto.response.CardCreateResponseDto;
 import com.hackathon.hackathon.domain.card.dto.response.CardDeleteResponseDto;
 import com.hackathon.hackathon.domain.card.entity.Card;
 import com.hackathon.hackathon.domain.card.repository.CardRepository;
+import com.hackathon.hackathon.domain.wallet.entity.Wallet;
 import com.hackathon.hackathon.domain.wallet.repository.WalletRepository;
+import com.hackathon.hackathon.domain.wallet.service.WalletService;
 import com.hackathon.hackathon.global.S3.S3Service;
 import com.hackathon.hackathon.global.response.SuccessResponse;
 import java.io.IOException;
@@ -26,6 +28,7 @@ public class CardService {
 
     private final CardRepository cardRepository;
     private final WalletRepository walletRepository;
+    private final WalletService walletService;
     private final S3Service s3Service;
 
     @Transactional
@@ -42,11 +45,22 @@ public class CardService {
                 wallet(walletRepository.findById(walletId).orElse(null)).
                 build();
         Card saveCard = cardRepository.save(card);
-        Long saveId = saveCard.getId();
-        String saveNickname = saveCard.getNickname();
+
+        SuccessResponse apiResponse = getSuccessResponse(saveCard);
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    private static SuccessResponse getSuccessResponse(Card saveCard) {
         CardCreateResponseDto cardCreateResponseDto = CardCreateResponseDto.builder().
-                id(saveId).
-                name(saveNickname).
+                id(saveCard.getId()).
+                nickname(saveCard.getNickname()).
+                contact(saveCard.getContact()).
+                gender(saveCard.getGender()).
+                instagramId(saveCard.getInstagramId()).
+                blogUrl(saveCard.getBlogUrl()).
+                youtubeUrl(saveCard.getYoutubeUrl()).
+                githubId(saveCard.getGithubId()).
                 build();
 
         SuccessResponse apiResponse = SuccessResponse.builder().
@@ -54,8 +68,7 @@ public class CardService {
                 message("카드 생성에 성공했습니다.").
                 data(cardCreateResponseDto).
                 build();
-
-        return ResponseEntity.ok(apiResponse);
+        return apiResponse;
     }
 
     @Transactional
@@ -77,8 +90,33 @@ public class CardService {
         return ResponseEntity.ok(apiResponse);
     }
 
-    public String uploadImage(MultipartFile file) throws IOException {
+    public ResponseEntity<?> getCardInfo(Long cardId) {
+        Optional<Card> findCard = cardRepository.findById(cardId);
+        CardCreateResponseDto cardCreateResponseDto = CardCreateResponseDto.builder().
+                id(findCard.get().getId()).
+                nickname(findCard.get().getNickname()).
+                contact(findCard.get().getContact()).
+                gender(findCard.get().getGender()).
+                instagramId(findCard.get().getInstagramId()).
+                blogUrl(findCard.get().getBlogUrl()).
+                youtubeUrl(findCard.get().getYoutubeUrl()).
+                githubId(findCard.get().getGithubId()).
+                build();
+
+        SuccessResponse apiResponse = SuccessResponse.builder().
+                code(200).
+                message("카드 생성에 성공했습니다.").
+                data(cardCreateResponseDto).
+                build();
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @Transactional
+    public String uploadImage(MultipartFile file, Long walletId) throws IOException {
         String imageUrl = s3Service.upload(file);
+        Wallet wallet = walletRepository.findById(walletId).get();
+        wallet.addImageUrl(imageUrl);
         return imageUrl;
     }
 }
