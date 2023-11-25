@@ -14,7 +14,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.List;
 import java.util.Optional;
+
+import static com.hackathon.hackathon.domain.wallet.enums.WalletStatus.ACTIVE;
+import static com.hackathon.hackathon.domain.wallet.enums.WalletStatus.DEACTIVE;
 
 @Service
 @RequiredArgsConstructor
@@ -22,18 +26,13 @@ import java.util.Optional;
 public class WalletService {
 
     private final WalletRepository walletRepository;
-    private final AuthentiatedUserUtils authentiatedUserUtils;
-
     // 지갑 만들기
-    public ResponseEntity<?> createWallet(String userEmail, WalletRequestDTO walletRequestDTO) {
-
-
-        User user = authentiatedUserUtils.getCurrentUser(); // 유저 정보 가져오기
-
-
+    @Transactional
+    public SuccessResponse<Object> createWallet(User user, WalletRequestDTO walletRequestDTO) {
         Wallet wallet = Wallet.builder()
                 .name(walletRequestDTO.getName())
                 .user(user)
+                .status(ACTIVE)
                 .build();
 
         walletRepository.save(wallet);
@@ -50,6 +49,33 @@ public class WalletService {
                 .data(walletResponseDTO)
                 .build();
 
-        return ResponseEntity.ok(apiResponse);
+        return apiResponse;
+    }
+
+    public SuccessResponse<Object> getWallet(User user, Long walletId) {
+        List<Wallet> wallets = walletRepository.findAllByUserId(user.getId());
+        Optional<Wallet> wallet =  wallets.stream().filter(w -> walletId.equals(w.getId())).findFirst();
+        return SuccessResponse.onSuccess(200,wallet.get());
+    }
+
+    public SuccessResponse<Object> getWallets(User user) {
+        List<Wallet> wallets = walletRepository.findAllByUserId(user.getId());
+        return SuccessResponse.onSuccess(200,wallets);
+    }
+
+
+    @Transactional
+    public SuccessResponse<Object> deleteWallet(User user,Long walletId) {
+        List<Wallet> wallets = walletRepository.findAllByUserId(user.getId());
+        Optional<Wallet> wallet =  wallets.stream().filter(w -> walletId.equals(w.getId())).findFirst();
+        Wallet responseWallet = updateWalletStatus(wallet.get());
+        return SuccessResponse.onSuccess(200,responseWallet);
+    }
+
+
+    private Wallet updateWalletStatus(Wallet wallet){
+        wallet.updateStatus(DEACTIVE);
+        walletRepository.save(wallet);
+        return wallet;
     }
 }
