@@ -2,15 +2,20 @@ package com.hackathon.hackathon.domain.card.service;
 
 import static com.hackathon.hackathon.domain.card.enums.CardStatus.ACTIVE;
 import static com.hackathon.hackathon.domain.card.enums.CardStatus.DEACTIVE;
+import static com.hackathon.hackathon.domain.card.enums.CardSuccessMessage.CARD_DELETE_SUCCESS_MESSAGE;
+import static com.hackathon.hackathon.domain.card.enums.CardSuccessMessage.CARD_GET_SUCCESS_MESSAGE;
+import static com.hackathon.hackathon.domain.card.enums.HttpStatusCode.OK;
+import static com.hackathon.hackathon.domain.card.exception.constants.CardErrorMessage.ACCESS_DENIED_OTHER_CARD;
 
 import com.hackathon.hackathon.domain.card.dto.request.CardCreateRequestDto;
 import com.hackathon.hackathon.domain.card.dto.response.CardCreateResponseDto;
 import com.hackathon.hackathon.domain.card.dto.response.CardDeleteResponseDto;
 import com.hackathon.hackathon.domain.card.entity.Card;
+import com.hackathon.hackathon.domain.card.exception.CardException;
 import com.hackathon.hackathon.domain.card.repository.CardRepository;
+import com.hackathon.hackathon.domain.user.entity.User;
 import com.hackathon.hackathon.domain.wallet.entity.Wallet;
 import com.hackathon.hackathon.domain.wallet.repository.WalletRepository;
-import com.hackathon.hackathon.domain.wallet.service.WalletService;
 import com.hackathon.hackathon.global.S3.S3Service;
 import com.hackathon.hackathon.global.response.SuccessResponse;
 import java.io.IOException;
@@ -28,11 +33,10 @@ public class CardService {
 
     private final CardRepository cardRepository;
     private final WalletRepository walletRepository;
-    private final WalletService walletService;
     private final S3Service s3Service;
 
     @Transactional
-    public ResponseEntity<?> createCard(CardCreateRequestDto cardCreateRequestDto, Long walletId) {
+    public ResponseEntity<?> createCard(User currentUser, CardCreateRequestDto cardCreateRequestDto, Long walletId) {
         Card card = Card.builder().
                 nickname(cardCreateRequestDto.getNickname()).
                 contact(cardCreateRequestDto.getContact()).
@@ -63,16 +67,16 @@ public class CardService {
                 githubId(saveCard.getGithubId()).
                 build();
 
-        SuccessResponse apiResponse = SuccessResponse.builder().
-                code(200).
-                message("카드 생성에 성공했습니다.").
+        return SuccessResponse.builder().
+                code(OK.getValue()).
+                message(CARD_GET_SUCCESS_MESSAGE.getMessage()).
                 data(cardCreateResponseDto).
                 build();
-        return apiResponse;
     }
 
     @Transactional
-    public ResponseEntity<?> deleteCard(Long cardId) {
+    public ResponseEntity<?> deleteCard(User currentUser, Long cardId) throws Exception {
+        checkUserPrivilege(currentUser, cardId);
         Optional<Card> findCard = cardRepository.findById(cardId);
         Card updateCard = findCard.get().updateCardStatus(DEACTIVE);
 
@@ -81,16 +85,17 @@ public class CardService {
                 cardStatus(updateCard.getCardStatus())
                 .build();
 
-        SuccessResponse apiResponse = SuccessResponse.builder().
-                code(200).
-                message("카드 삭제에 성공했습니다.").
+        SuccessResponse<Object> apiResponse = SuccessResponse.builder().
+                code(OK.getValue()).
+                message(CARD_DELETE_SUCCESS_MESSAGE.getMessage()).
                 data(cardDeleteResponseDto).
                 build();
 
         return ResponseEntity.ok(apiResponse);
     }
 
-    public ResponseEntity<?> getCardInfo(Long cardId) {
+    public ResponseEntity<?> getCardInfo(User currentUser, Long cardId) throws Exception {
+        checkUserPrivilege(currentUser, cardId);
         Optional<Card> findCard = cardRepository.findById(cardId);
         CardCreateResponseDto cardCreateResponseDto = CardCreateResponseDto.builder().
                 id(findCard.get().getId()).
@@ -103,13 +108,19 @@ public class CardService {
                 githubId(findCard.get().getGithubId()).
                 build();
 
-        SuccessResponse apiResponse = SuccessResponse.builder().
-                code(200).
-                message("카드 생성에 성공했습니다.").
+        SuccessResponse<Object> apiResponse = SuccessResponse.builder().
+                code(OK.getValue()).
+                message(CARD_GET_SUCCESS_MESSAGE.getMessage()).
                 data(cardCreateResponseDto).
                 build();
 
         return ResponseEntity.ok(apiResponse);
+    }
+
+    private static void checkUserPrivilege(User currentUser, Long cardId) throws Exception {
+        if (!currentUser.getId().equals(cardId)) {
+            throw CardException.of(ACCESS_DENIED_OTHER_CARD);
+        }
     }
 
     @Transactional
