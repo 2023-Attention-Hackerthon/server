@@ -95,6 +95,7 @@ public class CardService {
                 adjective(saveCard.getAdjective()).
                 mbti(saveCard.getMbti()).
                 colorCode(saveCard.getColorCode()).
+                walletId(saveCard.getWallet().getId()).
                 build();
 
 

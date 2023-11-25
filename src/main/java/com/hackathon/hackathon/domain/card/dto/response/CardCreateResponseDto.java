@@ -39,11 +39,13 @@ public class CardCreateResponseDto {
 
     private String githubId;
     private String colorCode;
+    private Long walletId;
 
     @Builder
-    public CardCreateResponseDto(Long id, String nickname, String contact, Gender gender, String instagramId,
+    public CardCreateResponseDto(Long id, Long walletId,String nickname, String contact, Gender gender, String instagramId,
                                  String blogUrl, String youtubeUrl, String githubId, String cardName, String introduce, String mbti, List<String> adjective, int age, String colorCode) {
         this.id = id;
+        this.walletId = walletId;
         this.nickname = nickname;
         this.contact = contact;
         this.gender = gender;
