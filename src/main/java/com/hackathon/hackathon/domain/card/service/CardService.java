@@ -2,11 +2,16 @@ package com.hackathon.hackathon.domain.card.service;
 
 import static com.hackathon.hackathon.domain.card.enums.CardStatus.ACTIVE;
 import static com.hackathon.hackathon.domain.card.enums.CardStatus.DEACTIVE;
+import static com.hackathon.hackathon.domain.card.enums.CardSuccessMessage.CARD_DELETE_SUCCESS_MESSAGE;
+import static com.hackathon.hackathon.domain.card.enums.CardSuccessMessage.CARD_GET_SUCCESS_MESSAGE;
+import static com.hackathon.hackathon.domain.card.enums.HttpStatusCode.OK;
+import static com.hackathon.hackathon.domain.card.exception.constants.CardErrorMessage.ACCESS_DENIED_OTHER_CARD;
 
 import com.hackathon.hackathon.domain.card.dto.request.CardCreateRequestDto;
 import com.hackathon.hackathon.domain.card.dto.response.CardCreateResponseDto;
 import com.hackathon.hackathon.domain.card.dto.response.CardDeleteResponseDto;
 import com.hackathon.hackathon.domain.card.entity.Card;
+import com.hackathon.hackathon.domain.card.exception.CardException;
 import com.hackathon.hackathon.domain.card.repository.CardRepository;
 import com.hackathon.hackathon.domain.user.entity.User;
 import com.hackathon.hackathon.domain.wallet.entity.Wallet;
@@ -31,7 +36,7 @@ public class CardService {
     private final S3Service s3Service;
 
     @Transactional
-    public ResponseEntity<?> createCard(CardCreateRequestDto cardCreateRequestDto, Long walletId) {
+    public ResponseEntity<?> createCard(User currentUser, CardCreateRequestDto cardCreateRequestDto, Long walletId) {
         Card card = Card.builder().
                 nickname(cardCreateRequestDto.getNickname()).
                 contact(cardCreateRequestDto.getContact()).
@@ -63,8 +68,8 @@ public class CardService {
                 build();
 
         return SuccessResponse.builder().
-                code(200).
-                message("카드 생성에 성공했습니다.").
+                code(OK.getValue()).
+                message(CARD_GET_SUCCESS_MESSAGE.getMessage()).
                 data(cardCreateResponseDto).
                 build();
     }
@@ -81,8 +86,8 @@ public class CardService {
                 .build();
 
         SuccessResponse<Object> apiResponse = SuccessResponse.builder().
-                code(200).
-                message("카드 삭제에 성공했습니다.").
+                code(OK.getValue()).
+                message(CARD_DELETE_SUCCESS_MESSAGE.getMessage()).
                 data(cardDeleteResponseDto).
                 build();
 
@@ -104,8 +109,8 @@ public class CardService {
                 build();
 
         SuccessResponse<Object> apiResponse = SuccessResponse.builder().
-                code(200).
-                message("카드 생성에 성공했습니다.").
+                code(OK.getValue()).
+                message(CARD_GET_SUCCESS_MESSAGE.getMessage()).
                 data(cardCreateResponseDto).
                 build();
 
@@ -113,8 +118,8 @@ public class CardService {
     }
 
     private static void checkUserPrivilege(User currentUser, Long cardId) throws Exception {
-        if (currentUser.getId().equals(cardId)) {
-            throw new Exception("[ERROR] 본인의 카드가 아니면 삭제할 수 없습니다.");
+        if (!currentUser.getId().equals(cardId)) {
+            throw CardException.of(ACCESS_DENIED_OTHER_CARD);
         }
     }
 
