@@ -53,6 +53,30 @@ public class WalletService {
 
         return apiResponse;
     }
+    @Transactional
+    public SuccessResponse<Object> createInitialWallet(User user) {
+        Wallet wallet = Wallet.builder()
+                .name("나의 지갑")
+                .user(user)
+                .status(ACTIVE)
+                .build();
+
+        walletRepository.save(wallet);
+
+        WalletResponseDTO walletResponseDTO = WalletResponseDTO.builder()
+                .id(wallet.getId())
+                .userId(wallet.getUser().getId())
+                .name(wallet.getName())
+                .build();
+
+        SuccessResponse apiResponse = SuccessResponse.builder()
+                .code(200)
+                .message("success")
+                .data(walletResponseDTO)
+                .build();
+
+        return apiResponse;
+    }
 
     public SuccessResponse<Object> getWallet(User user, Long walletId) {
         List<Wallet> wallets = walletRepository.findAllByUserId(user.getId());

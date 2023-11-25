@@ -7,6 +7,7 @@ import com.hackathon.hackathon.domain.user.entity.AuthInfo;
 import com.hackathon.hackathon.domain.user.entity.LoginType;
 import com.hackathon.hackathon.domain.user.entity.User;
 import com.hackathon.hackathon.domain.user.exception.EmailAlreadyRegistered;
+import com.hackathon.hackathon.domain.wallet.service.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserDomainService {
     private final UserAdaptor userAdaptor;
+    private final WalletService walletService;
 
     public User login(LoginType loginType, String email){
         User user = userAdaptor.findByEmail(email);
@@ -29,7 +31,8 @@ public class UserDomainService {
         User user = User.builder()
                 .authInfo(authInfo)
                 .build();
-        System.out.println(user.getAuthInfo());
+        System.out.println(user.getId());
+        walletService.createInitialWallet(user);
         return userAdaptor.save(user);
     }
 
