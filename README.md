@@ -63,17 +63,17 @@ JWT를 이용한 카카오 소셜 로그인 Open ID 이용
         <td>
             <img src="https://github.com/AlmondBreez3.png?size=100">
             <br>
-            <a href="https://github.com/AlmondBreez3"><I>9yujin</I></a>
+            <a href="https://github.com/AlmondBreez3"><I>hanbee</I></a>
         </td>
         <td>
             <img src="https://github.com/choeun7.png?size=100">
             <br>
-            <a href="https://github.com/choeun7"><I>9yujin</I></a>
+            <a href="https://github.com/choeun7"><I>choen</I></a>
         </td>
         <td>
             <img src="https://github.com/oxdjww.png?size=100" width="100">
             <br>
-            <a href="https://github.com/oxdjww"><I>kongnayeon</I></a>
+            <a href="https://github.com/oxdjww"><I>oxdjww</I></a>
         </td>
     </tr>
 </table>
