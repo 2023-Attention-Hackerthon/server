@@ -1,12 +1,15 @@
 ## 1. 시작 & 과정
-CMC & UMC 연합 해커톤에서 시작된 Attention!입니다
+CMC & UMC 연합 해커톤에서 시작되었고 최우수상(2등)팀 Attention!입니다
+해커톤에서 진행한 코드인 만큼 빠르고 실현 가능한 코드를 구현하는데 초점을 맞췄습니다!
+
 
 ## 2. 서비스 소개
 <img width="583" alt="image" src="https://github.com/2023-Attention-Hackerthon/server/assets/99820610/d69ff215-c1a6-4f3b-ae4a-9d1edca0bbeb">
 
-![7.png](..%2F..%2FDownloads%2F7.png)
+![7 (1)](https://github.com/2023-Attention-Hackerthon/server/assets/99820610/802a6100-7db4-4ad7-a13b-ac8fabe4fd9a)
 
-![8.png](..%2F..%2FDownloads%2F8.png)
+![8 (1)](https://github.com/2023-Attention-Hackerthon/server/assets/99820610/36c02616-74c8-46ff-bbf1-40920b0ec3f6)
+
 
 ![9](https://github.com/2023-Attention-Hackerthon/server/assets/99820610/a9026d76-88fe-41e6-876a-d11e94597a05)
 
@@ -27,9 +30,12 @@ CMC & UMC 연합 해커톤에서 시작된 Attention!입니다
 Java, Spring Boot, MySql, AWS, Docker, Docker Compose, Swagger etc
 
 배포:
-![img.png](img.png)
+<img width="561" alt="image" src="https://github.com/2023-Attention-Hackerthon/server/assets/99820610/7cfaef34-0def-4765-a4e7-ae6d5a62eb6d">
+
 
 AI 연결: https://platform.openai.com/docs/overview 를 이용한 사용자 성격 맞춤 ai 사용
+
+로그인: 카카오의 Open ID 로그인을 이용하여 보안을 강화하였습니다
 
 ## 4. 참여자
 <table>
@@ -39,7 +45,9 @@ AI 연결: https://platform.openai.com/docs/overview 를 이용한 사용자 성
 도메인 기본 세팅/
 지갑 생성 및 삭제/ 
 이미지 업로드 기능 구현/
-카드 생성 및 삭제</B></td>
+카드 생성 및 삭제/
+JWT를 이용한 카카오 소셜 로그인 Open ID 이용
+</B></td>
         <td><B>지갑,카드 도메인 초기 세팅
 / 카드 생성 시 Chat Gpt Open API 연결</B></td>
         <td><B>카드 생성 및 삭제</B></td>
