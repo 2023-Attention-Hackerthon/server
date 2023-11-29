@@ -1,5 +1,6 @@
 ## 1. 시작 & 과정
 CMC & UMC 연합 해커톤에서 시작되었고 최우수상(2등)팀 Attention!입니다
+
 해커톤에서 진행한 코드인 만큼 빠르고 실현 가능한 코드를 구현하는데 초점을 맞췄습니다!
 
 
@@ -30,6 +31,7 @@ CMC & UMC 연합 해커톤에서 시작되었고 최우수상(2등)팀 Attention
 Java, Spring Boot, MySql, AWS, Docker, Docker Compose, Swagger etc
 
 배포:
+
 <img width="561" alt="image" src="https://github.com/2023-Attention-Hackerthon/server/assets/99820610/7cfaef34-0def-4765-a4e7-ae6d5a62eb6d">
 
 
